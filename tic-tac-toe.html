@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
+            font-size: 60px;
+        }
+
+        .board {
+            display: grid;
+            grid-template-rows: 200px 200px 200px;
+            grid-template-columns: 200px 200px 200px;
+        }
+
+        .square {
+            background: #EEE;
+            border: 3px solid #FFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .empty-square:hover {
+            background: #a3e0dc;
+            cursor: pointer;
+        }
+
+        .empty-square:active {
+            background: #8ebdba
+        }
+    </style>
+</head>
+<body>
+
+    <div class="board">
+
+    </div>
+    
+    <script>
+        const structure = ['','','','','','','','','']
+        let actualPlayer = 'x'
+        drawBoard()
+
+        function drawBoard() {
+            drawSquares()
+            enableSquaresClicks()
+
+            function drawSquares() {
+                let squaresDom = ''
+                for(let i = 0; i < structure.length; i++) {
+                    squaresDom += `<div
+                                    class="${getSquareClasses(structure[i])}"
+                                    data-number="${i}">
+                                        ${structure[i]}
+                                    </div>`
+                }
+                document.querySelector('.board').innerHTML = squaresDom
+
+                function getSquareClasses(squareValue) {
+                    let classes = 'square'
+                    if(squareValue === '')
+                        classes += ' empty-square'
+
+                    return classes
+                }
+            }
+
+            function enableSquaresClicks() {
+                [...document.getElementsByClassName('square')].forEach(square => {
+                    square.onclick = function() { userClick(square.dataset.number) }
+                })
+            }
+        }
+
+        function userClick(squareNumber) {
+            structure[squareNumber] = actualPlayer
+            drawBoard()
+            checkEndGame()
+            togglePlayer()
+        }
+
+        function checkEndGame() {
+            if(checkIfHasAWinner(actualPlayer)) {
+                alert(`${actualPlayer} is the winner!`)
+            }
+            else if(checkIfIsWo()) {
+                alert('W.O.!')
+            }
+            
+            function checkIfHasAWinner(player) {
+                return checkRows(player) ||
+                    checkColumns(player) ||
+                    checkDiagonals(player)
+
+                function checkRows(player) {
+                    return areEqual(structure[0], structure[1], structure[2], player) ||
+                        areEqual(structure[3], structure[4], structure[5], player) ||
+                        areEqual(structure[6], structure[7], structure[8], player)
+                }
+
+                function checkColumns(player) {
+                    return areEqual(structure[0], structure[3], structure[6], player) ||
+                        areEqual(structure[1], structure[4], structure[7], player) ||
+                        areEqual(structure[2], structure[5], structure[8], player)
+                }
+                
+                function checkDiagonals(player) {
+                    return areEqual(structure[0], structure[4], structure[8], player) ||
+                        areEqual(structure[2], structure[4], structure[6], player)
+                }
+            }
+
+            function checkIfIsWo() {
+                for(let i = 0; i < 9; i++) {
+                    if(structure[i] === '') return false
+                }
+
+                return true
+            }
+
+            function checkIfIsWo() {
+
+            }
+        }
+
+        function togglePlayer() {
+            actualPlayer = actualPlayer === 'x' ? 'o' : 'x'
+        }
+
+        function areEqual(...args){
+            const len = args.length
+            for (let i = 1; i < len; i++) {
+                if(args[i] !== args[i - 1]) return false
+            }
+            
+            return true
+        }
+    </script>
+</body>
+</html>
